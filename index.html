@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Addis Express — Delivery That Moves With You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════
+   DESIGN SYSTEM TOKENS
+   Palette: Near-black charcoal + warm off-white + 
+   electric saffron accent + muted sage secondary
+═══════════════════════════════════════════════ */
+:root {
+  --bg:        #111110;
+  --surface:   #1C1B19;
+  --surface-2: #242320;
+  --border:    rgba(255,255,255,0.07);
+  --border-md: rgba(255,255,255,0.12);
+  --cream:     #F2EDE4;
+  --cream-dim: rgba(242,237,228,0.55);
+  --cream-faint: rgba(242,237,228,0.12);
+  --saffron:   #E8A020;
+  --saffron-dk:#B87A10;
+  --saffron-lt:#F5BE5A;
+  --sage:      #4A7C6F;
+  --sage-lt:   #6BA898;
+  --muted:     rgba(242,237,228,0.38);
+  --ff-head:   'Instrument Serif', Georgia, serif;
+  --ff-body:   'Outfit', sans-serif;
+  --r-sm:      10px;
+  --r-md:      16px;
+  --r-lg:      24px;
+  --r-xl:      32px;
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--saffron) var(--surface);
+}
+
+body {
+  font-family: var(--ff-body);
+  background: var(--bg);
+  color: var(--cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Utility ── */
+.u-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--saffron);
+}
+.u-label::before {
+  content: '';
+  display: block;
+  width: 22px; height: 1.5px;
+  background: var(--saffron);
+  border-radius: 2px;
+}
+
+.u-h2 {
+  font-family: var(--ff-head);
+  font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  font-weight: 400;
+}
+
+.u-h2 em {
+  font-style: italic;
+  color: var(--saffron-lt);
+}
+
+.u-body {
+  font-size: 1.0625rem;
+  line-height: 1.72;
+  color: var(--cream-dim);
+  font-weight: 300;
+}
+
+.u-grid { display: grid; }
+.u-flex { display: flex; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-family: var(--ff-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.25s var(--ease), background 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.btn:hover { transform: translateY(-2px); }
+
+.btn-gold {
+  background: var(--saffron);
+  color: var(--bg);
+}
+.btn-gold:hover {
+  background: var(--saffron-lt);
+  box-shadow: 0 12px 32px rgba(232,160,32,0.35);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--cream);
+  border: 1.5px solid var(--border-md);
+}
+.btn-outline:hover {
+  border-color: var(--cream);
+  background: rgba(242,237,228,0.06);
+}
+
+.btn-ghost {
+  background: var(--cream-faint);
+  color: var(--cream);
+  border: 1.5px solid var(--border);
+}
+.btn-ghost:hover { background: rgba(242,237,228,0.14); }
+
+/* ── Arrow icon ── */
+.arrow {
+  width: 18px; height: 18px;
+  display: inline-block;
+  position: relative;
+}
+.arrow::before, .arrow::after {
+  content: '';
+  position: absolute;
+  background: currentColor;
+}
+.arrow::before {
+  width: 14px; height: 1.5px;
+  top: 50%; left: 0;
+  transform: translateY(-50%);
+}
+.arrow::after {
+  width: 8px; height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-top: 1.5px solid currentColor;
+  background: transparent;
+  top: 50%; right: 0;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* ══════════════════════════════
+   NAV
+══════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 68px;
+  background: rgba(17,17,16,0.85);
+  backdrop-filter: blur(20px) saturate(150%);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: var(--ff-head);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--cream);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-logo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--saffron);
+  display: inline-block;
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.nav-center {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-center a {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.nav-center a:hover { color: var(--cream); }
+
+.nav-cta {
+  background: var(--saffron);
+  color: var(--bg) !important;
+  padding: 9px 20px;
+  border-radius: 100px;
+  font-weight: 600 !important;
+  font-size: 0.84rem !important;
+  transition: background 0.2s, transform 0.2s !important;
+  display: inline-block;
+}
+
+.nav-cta:hover { background: var(--saffron-lt) !important; transform: translateY(-1px); color: var(--bg) !important; }
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 0 48px;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+}
+
+/* Diagonal noise texture overlay */
+#hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Radial glow behind headline */
+.hero-glow {
+  position: absolute;
+  top: 20%; left: 50%;
+  transform: translateX(-50%);
+  width: 700px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(232,160,32,0.09) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Diagonal grid lines */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(242,237,228,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242,237,228,0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Floating route dots */
+.hero-route {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-route-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--saffron);
+  opacity: 0.5;
+  position: absolute;
+  animation: floatDot 6s ease-in-out infinite;
+}
+
+@keyframes floatDot {
+  0%,100%{ transform: translateY(0); opacity:0.5; }
+  50%{ transform: translateY(-14px); opacity:0.9; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  padding-top: 100px;
+}
+
+.hero-tag {
+  opacity: 0;
+  animation: slideUp 0.7s var(--ease) forwards 0.2s;
+  margin-bottom: 28px;
+}
+
+.hero-headline {
+  font-family: var(--ff-head);
+  font-size: clamp(4rem, 8.5vw, 8.5rem);
+  line-height: 0.93;
+  letter-spacing: -0.03em;
+  color: var(--cream);
+  font-weight: 400;
+  opacity: 0;
+  animation: slideUp 0.85s var(--ease) forwards 0.38s;
+}
+
+.hero-headline .italic-line {
+  font-style: italic;
+  color: var(--saffron-lt);
+}
+
+.hero-headline .small-line {
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  color: var(--cream-dim);
+  display: block;
+  margin-top: 4px;
+}
+
+.hero-sub-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 52px;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: slideUp 0.85s var(--ease) forwards 0.6s;
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--cream-dim);
+  font-weight: 300;
+  max-width: 400px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Stat ticker strip */
+.hero-tickers {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  margin-top: 60px;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards 1s;
+}
+
+.hero-ticker {
+  flex: 1;
+  padding: 24px 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-ticker:last-child { border-right: none; }
+
+.ticker-val {
+  font-family: var(--ff-head);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--cream);
+  line-height: 1;
+}
+
+.ticker-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ══════════════════════════════
+   SCROLL TICKER (marquee)
+══════════════════════════════ */
+.ticker-bar {
+  overflow: hidden;
+  background: var(--saffron);
+  padding: 13px 0;
+  border-top: 1px solid var(--saffron-dk);
+  border-bottom: 1px solid var(--saffron-dk);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 24s linear infinite;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 0 36px;
+  white-space: nowrap;
+}
+
+.ticker-item span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bg);
+}
+
+.ticker-sep {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(17,17,16,0.3);
+  flex-shrink: 0;
+}
+
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+/* ══════════════════════════════
+   SERVICES
+══════════════════════════════ */
+#services {
+  padding: 110px 48px;
+  background: var(--bg);
+}
+
+.services-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 72px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 2px;
+  background: var(--border);
+}
+
+.svc {
+  background: var(--surface);
+  padding: 44px 36px 40px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.35s var(--ease);
+  cursor: default;
+}
+
+.svc::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--saffron);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+
+.svc:hover { background: var(--surface-2); }
+.svc:hover::after { transform: scaleX(1); }
+
+.svc-num {
+  font-family: var(--ff-head);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+.svc-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  background: var(--cream-faint);
+  border: 1px solid var(--border-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  transition: background 0.3s;
+}
+
+.svc:hover .svc-icon { background: rgba(232,160,32,0.15); border-color: rgba(232,160,32,0.3); }
+
+.svc-icon svg {
+  width: 20px; height: 20px;
+  stroke: var(--cream);
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s;
+}
+
+.svc:hover .svc-icon svg { stroke: var(--saffron-lt); }
+
+.svc-name {
+  font-family: var(--ff-head);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.svc-desc {
+  font-size: 0.875rem;
+  line-height: 1.68;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* Featured service — spans 2 cols */
+.svc--featured {
+  grid-column: span 2;
+  background: var(--surface-2);
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+
+.svc--featured .svc-body { flex: 1; }
+
+.svc--featured .svc-visual {
+  flex-shrink: 0;
+  width: 180px; height: 160px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated concentric rings */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(232,160,32,0.2);
+  animation: expand 3s ease-out infinite;
+}
+
+.ring:nth-child(1) { width: 60px; height: 60px; animation-delay: 0s; }
+.ring:nth-child(2) { width: 100px; height: 100px; animation-delay: 0.8s; }
+.ring:nth-child(3) { width: 140px; height: 140px; animation-delay: 1.6s; }
+
+@keyframes expand {
+  0%{ opacity: 0.8; transform: scale(0.8); }
+  100%{ opacity: 0; transform: scale(1.2); }
+}
+
+.ring-center {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--saffron);
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 24px rgba(232,160,32,0.6);
+}
+
+/* ══════════════════════════════
+   HOW IT WORKS
+══════════════════════════════ */
+#how {
+  padding: 110px 48px;
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+#how::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-md), transparent);
+}
+
+.how-inner {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.how-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 40px;
+}
+
+.how-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.how-step:first-child { border-top: 1px solid var(--border); }
+
+.step-num-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding-top: 4px;
+}
+
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ff-head);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--muted);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.how-step:hover .step-num,
+.how-step.active .step-num {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--bg);
+}
+
+.step-line {
+  width: 1px;
+  flex: 1;
+  min-height: 20px;
+  background: var(--border);
+  margin-top: 8px;
+}
+
+.step-title {
+  font-family: var(--ff-head);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--cream-dim);
+  margin-bottom: 6px;
+  transition: color 0.3s;
+}
+
+.how-step:hover .step-title,
+.how-step.active .step-title { color: var(--cream); }
+
+.step-desc {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* Animated illustration panel */
+.how-panel {
+  position: sticky;
+  top: 100px;
+  aspect-ratio: 1;
+  max-width: 500px;
+  background: var(--surface-2);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.how-panel-inner {
+  width: 80%;
+  aspect-ratio: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.panel-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(242,237,228,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242,237,228,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  border-radius: 8px;
+}
+
+.panel-route-svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.panel-center-badge {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  border: 1.5px solid var(--border-md);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+}
+
+.panel-badge-icon {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.panel-badge-text {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ══════════════════════════════
+   WHY / TRUST
+══════════════════════════════ */
+#trust {
+  padding: 110px 48px;
+  background: var(--bg);
+}
+
+.trust-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.trust-pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.trust-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  transition: border-color 0.3s, transform 0.3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.trust-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--saffron), var(--saffron-lt));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.trust-card:hover {
+  border-color: var(--border-md);
+  transform: translateY(-4px);
+}
+
+.trust-card:hover::before { opacity: 1; }
+
+.trust-card-icon {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.trust-card-title {
+  font-family: var(--ff-head);
+  font-size: 1.1rem;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.trust-card-desc {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* Visual side — abstract city pulse */
+.trust-visual {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tv-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(242,237,228,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242,237,228,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.tv-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.tv-node-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--saffron);
+  animation: nodePulse 2s ease-in-out infinite;
+}
+
+.tv-node:nth-child(2) .tv-node-dot { animation-delay: 0.5s; background: var(--sage-lt); }
+.tv-node:nth-child(3) .tv-node-dot { animation-delay: 1s; }
+.tv-node:nth-child(4) .tv-node-dot { animation-delay: 1.5s; background: var(--sage-lt); }
+
+@keyframes nodePulse {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(232,160,32,0.5); }
+  50%{ box-shadow: 0 0 0 8px rgba(232,160,32,0); }
+}
+
+.tv-node-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.tv-center {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.tv-center-ring {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232,160,32,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto;
+}
+
+.tv-center-ring::before {
+  content: '';
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,160,32,0.12);
+}
+
+.tv-center-ring::after {
+  content: '';
+  position: absolute;
+  inset: -32px;
+  border-radius: 50%;
+  border: 1px solid rgba(232,160,32,0.07);
+}
+
+.tv-ae {
+  font-family: var(--ff-head);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--saffron-lt);
+}
+
+.tv-center-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 14px;
+}
+
+/* ══════════════════════════════
+   FOR BUSINESSES
+══════════════════════════════ */
+#business {
+  padding: 110px 48px;
+  background: var(--surface);
+  position: relative;
+}
+
+.biz-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+  margin-bottom: 72px;
+}
+
+.audience-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.aud-tab {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.aud-tab:hover,
+.aud-tab.active {
+  border-color: var(--saffron);
+  background: rgba(232,160,32,0.07);
+}
+
+.aud-tab-icon { font-size: 1.4rem; display: block; margin-bottom: 8px; }
+.aud-tab-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.aud-tab.active .aud-tab-label { color: var(--saffron-lt); }
+
+.biz-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+
+.biz-feat {
+  background: var(--bg);
+  padding: 36px 28px;
+  transition: background 0.3s;
+}
+
+.biz-feat:hover { background: var(--surface-2); }
+
+.biz-feat-bar {
+  width: 32px; height: 3px;
+  background: var(--saffron);
+  border-radius: 2px;
+  margin-bottom: 24px;
+}
+
+.biz-feat-title {
+  font-family: var(--ff-head);
+  font-size: 1.05rem;
+  color: var(--cream);
+  margin-bottom: 10px;
+}
+
+.biz-feat-desc {
+  font-size: 0.84rem;
+  line-height: 1.68;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ══════════════════════════════
+   ABOUT
+══════════════════════════════ */
+#about {
+  padding: 110px 48px;
+  background: var(--bg);
+}
+
+.about-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.about-pull-quote {
+  font-family: var(--ff-head);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-style: italic;
+  line-height: 1.35;
+  color: var(--cream-dim);
+  border-left: 2px solid var(--saffron);
+  padding-left: 28px;
+  margin: 40px 0;
+  letter-spacing: -0.01em;
+}
+
+.about-values {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-val {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 20px;
+}
+
+.about-val:first-child { border-top: 1px solid var(--border); }
+
+.about-val-name {
+  font-family: var(--ff-head);
+  font-size: 1.05rem;
+  color: var(--cream);
+}
+
+.about-val-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  background: rgba(232,160,32,0.1);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(232,160,32,0.2);
+  white-space: nowrap;
+}
+
+/* About dark panel */
+.about-panel {
+  background: var(--surface-2);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border-md);
+  padding: 48px 44px;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-panel::before {
+  content: 'AE';
+  font-family: var(--ff-head);
+  font-size: 11rem;
+  font-style: italic;
+  color: rgba(242,237,228,0.03);
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.about-panel-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: 20px;
+}
+
+.about-panel-head {
+  font-family: var(--ff-head);
+  font-size: 1.8rem;
+  line-height: 1.2;
+  color: var(--cream);
+  margin-bottom: 18px;
+}
+
+.about-panel-body {
+  font-size: 0.9375rem;
+  line-height: 1.72;
+  color: var(--muted);
+  font-weight: 300;
+  margin-bottom: 36px;
+}
+
+.about-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+}
+
+.a-stat strong {
+  display: block;
+  font-family: var(--ff-head);
+  font-size: 2rem;
+  color: var(--saffron-lt);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.a-stat span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ══════════════════════════════
+   CTA STRIP
+══════════════════════════════ */
+.cta-strip {
+  padding: 0 48px;
+}
+
+.cta-inner {
+  background: var(--saffron);
+  border-radius: var(--r-xl);
+  padding: 72px 64px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-inner::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+
+.cta-inner::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; right: 80px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.cta-headline {
+  font-family: var(--ff-head);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  line-height: 1.1;
+  color: var(--bg);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+
+.cta-sub {
+  font-size: 1rem;
+  color: rgba(17,17,16,0.6);
+  font-weight: 300;
+}
+
+.cta-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-cta-dark {
+  background: var(--bg);
+  color: var(--cream);
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: background 0.2s, transform 0.2s var(--ease);
+  display: block;
+}
+
+.btn-cta-dark:hover { background: #2a2925; transform: translateY(-2px); }
+
+.btn-cta-ghost {
+  background: rgba(17,17,16,0.1);
+  color: var(--bg);
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  border: 2px solid rgba(17,17,16,0.2);
+  transition: background 0.2s, transform 0.2s var(--ease);
+  display: block;
+}
+
+.btn-cta-ghost:hover { background: rgba(17,17,16,0.18); transform: translateY(-2px); }
+
+/* ══════════════════════════════
+   CONTACT
+══════════════════════════════ */
+#contact {
+  padding: 110px 48px;
+  background: var(--surface);
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 80px;
+  margin-top: 56px;
+  align-items: start;
+}
+
+.contact-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.contact-info-block strong {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--saffron);
+  margin-bottom: 10px;
+}
+
+.contact-info-block p {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.contact-hrs {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 24px;
+}
+
+.hrs-title {
+  font-family: var(--ff-head);
+  font-size: 1rem;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.hrs-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+.hrs-row:last-child { border-bottom: none; }
+.hrs-row strong { color: var(--cream-dim); font-weight: 400; }
+
+/* Form */
+.contact-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.cf {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.cf.full { grid-column: 1 / -1; }
+
+.cf label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cf input,
+.cf select,
+.cf textarea {
+  background: var(--bg);
+  border: 1.5px solid var(--border-md);
+  border-radius: var(--r-sm);
+  padding: 13px 16px;
+  font-family: var(--ff-body);
+  font-size: 0.9375rem;
+  font-weight: 300;
+  color: var(--cream);
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.cf input::placeholder,
+.cf textarea::placeholder { color: rgba(242,237,228,0.2); }
+
+.cf select { color: rgba(242,237,228,0.5); }
+.cf select option { background: #1C1B19; color: var(--cream); }
+
+.cf input:focus,
+.cf select:focus,
+.cf textarea:focus {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 3px rgba(232,160,32,0.12);
+}
+
+.cf textarea { resize: vertical; min-height: 110px; }
+
+.cf-submit {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.submit-btn {
+  background: var(--saffron);
+  color: var(--bg);
+  border: none;
+  padding: 15px 36px;
+  border-radius: 100px;
+  font-family: var(--ff-body);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s var(--ease), box-shadow 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.submit-btn:hover {
+  background: var(--saffron-lt);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(232,160,32,0.35);
+}
+
+.submit-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  padding: 56px 48px 40px;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 56px;
+}
+
+.footer-brand p {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted);
+  font-weight: 300;
+  margin-top: 14px;
+  max-width: 260px;
+}
+
+.footer-col-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 18px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  font-size: 0.875rem;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 300;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--cream); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: rgba(242,237,228,0.2);
+  font-weight: 300;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}
+
+.footer-bottom-links a {
+  font-size: 0.78rem;
+  color: rgba(242,237,228,0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-bottom-links a:hover { color: var(--muted); }
+
+/* ══════════════════════════════
+   SCROLL REVEAL
+══════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+}
+
+.reveal.visible { opacity: 1; transform: none; }
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ══════════════════════════════
+   RESPONSIVE (tablet)
+══════════════════════════════ */
+@media (max-width: 1024px) {
+  nav { padding: 0 28px; }
+  .nav-center { display: none; }
+
+  #hero { padding: 0 28px; }
+  .hero-tickers { flex-wrap: wrap; }
+  .hero-ticker { min-width: 45%; border-right: 1px solid var(--border); }
+
+  section, #services, #how, #trust, #business, #about, #contact { padding: 80px 28px; }
+  .cta-strip { padding: 0 28px; }
+
+  .services-top,
+  .how-inner,
+  .trust-layout,
+  .biz-header,
+  .about-layout,
+  .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .svc--featured { grid-column: span 2; }
+
+  .how-panel { display: none; }
+
+  .biz-features { grid-template-columns: 1fr 1fr; }
+
+  .audience-tabs { grid-template-columns: repeat(3, 1fr); }
+
+  .trust-visual { max-width: 400px; margin: 0 auto; }
+
+  .footer-top { grid-template-columns: 1fr 1fr; }
+
+  .cta-inner { grid-template-columns: 1fr; }
+  .cta-btns { flex-direction: row; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 20px; }
+  #hero { padding: 0 20px; }
+  section, #services, #how, #trust, #business, #about, #contact { padding: 60px 20px; }
+  .cta-strip { padding: 0 20px; }
+
+  .hero-actions { flex-direction: column; }
+  .hero-tickers { display: none; }
+
+  .services-grid { grid-template-columns: 1fr; }
+  .svc--featured { grid-column: span 1; flex-direction: column; gap: 24px; }
+  .svc--featured .svc-visual { width: 100px; height: 80px; }
+
+  .trust-pillars { grid-template-columns: 1fr; }
+  .audience-tabs { grid-template-columns: repeat(2, 1fr); }
+  .biz-features { grid-template-columns: 1fr; }
+  .contact-form { grid-template-columns: 1fr; }
+  .cf.full { grid-column: 1; }
+
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+
+  .cta-inner { padding: 44px 28px; }
+  .cta-btns { flex-direction: column; }
+
+  .about-stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════ NAV ════════════ -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    Addis<span style="color:var(--saffron)">Express</span>
+    <span class="nav-logo-dot"></span>
+  </a>
+  <ul class="nav-center">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#business">For Business</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Request Delivery</a>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+
+  <!-- floating dots -->
+  <div style="position:absolute;top:35%;left:15%;pointer-events:none;z-index:0;">
+    <div class="hero-route-dot" style="animation-delay:0s"></div>
+  </div>
+  <div style="position:absolute;top:55%;right:20%;pointer-events:none;z-index:0;">
+    <div class="hero-route-dot" style="animation-delay:1.5s"></div>
+  </div>
+  <div style="position:absolute;top:25%;right:38%;pointer-events:none;z-index:0;">
+    <div class="hero-route-dot" style="animation-delay:3s"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-tag u-label">Courier & Delivery Services</div>
+
+    <h1 class="hero-headline">
+      Delivery that<br>
+      <span class="italic-line">moves with you.</span>
+      <span class="small-line">Fast. Reliable. Wherever you need it.</span>
+    </h1>
+
+    <div class="hero-sub-row">
+      <p class="hero-sub">
+        From a single package to daily business dispatch — Addis Express gets it there. Same-day pickup, trusted handling, city-wide reach.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-gold">
+          Request a Pickup <span class="arrow"></span>
+        </a>
+        <a href="#services" class="btn btn-outline">See Services</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-tickers">
+    <div class="hero-ticker">
+      <span class="ticker-val">Same</span>
+      <span class="ticker-label">Day Delivery Available</span>
+    </div>
+    <div class="hero-ticker">
+      <span class="ticker-val">Any</span>
+      <span class="ticker-label">Parcel, Document, or Package</span>
+    </div>
+    <div class="hero-ticker">
+      <span class="ticker-val">City</span>
+      <span class="ticker-label">Wide Coverage Network</span>
+    </div>
+    <div class="hero-ticker">
+      <span class="ticker-val">Fast</span>
+      <span class="ticker-label">Dispatch & Confirmation</span>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TICKER BAR ════════════ -->
+<div class="ticker-bar">
+  <div class="ticker-track">
+    <div class="ticker-item"><span>Same-Day Delivery</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Parcels & Packages</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Business Dispatch</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Restaurant Support</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Scheduled Pickups</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Secure Courier</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Urban Delivery</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Same-Day Delivery</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Parcels & Packages</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Business Dispatch</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Restaurant Support</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Scheduled Pickups</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Secure Courier</span><div class="ticker-sep"></div></div>
+    <div class="ticker-item"><span>Urban Delivery</span><div class="ticker-sep"></div></div>
+  </div>
+</div>
+
+<!-- ════════════ SERVICES ════════════ -->
+<section id="services">
+  <div class="services-top">
+    <div class="reveal">
+      <div class="u-label" style="margin-bottom:20px">What We Deliver</div>
+      <h2 class="u-h2">Everything from<br><em>everyday to urgent.</em></h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="u-body">Whether it's a gift, a business shipment, or a restaurant order — we handle it with the same speed and care. No delivery is too small. No timeline too tight.</p>
+      <a href="#contact" class="btn btn-gold" style="margin-top:28px">Book Now</a>
+    </div>
+  </div>
+
+  <div class="services-grid reveal">
+    <!-- Featured card -->
+    <div class="svc svc--featured">
+      <div class="svc-body">
+        <div class="svc-num">Signature Service</div>
+        <div class="svc-name">Same-Day Delivery</div>
+        <p class="svc-desc">Our fastest option. Request a pickup and we dispatch a courier immediately — arriving at your drop-off location the same day. Perfect for personal items, business shipments, and everything in between.</p>
+        <a href="#contact" class="btn btn-ghost" style="margin-top:24px;font-size:0.84rem;padding:10px 20px;">Book Same-Day →</a>
+      </div>
+      <div class="svc-visual">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring-center"></div>
+      </div>
+    </div>
+
+    <div class="svc">
+      <div class="svc-num">02</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <div class="svc-name">Document Courier</div>
+      <p class="svc-desc">Contracts, invoices, legal papers, and important letters — handled with discretion and delivered securely to the right hands.</p>
+    </div>
+
+    <div class="svc">
+      <div class="svc-num">03</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <div class="svc-name">Parcel Delivery</div>
+      <p class="svc-desc">Gifts, products, personal packages — picked up carefully and dropped off wherever your recipient is, on time.</p>
+    </div>
+
+    <div class="svc">
+      <div class="svc-num">04</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <div class="svc-name">Restaurant & Retail</div>
+      <p class="svc-desc">Extend your reach without building a full delivery team. We provide rapid dispatch support for food and retail businesses.</p>
+    </div>
+
+    <div class="svc">
+      <div class="svc-num">05</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="svc-name">Scheduled Pickups</div>
+      <p class="svc-desc">Plan ahead. Set recurring or time-specific pickups — daily, weekly, or on a custom schedule that suits your operations.</p>
+    </div>
+
+    <div class="svc">
+      <div class="svc-num">06</div>
+      <div class="svc-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="svc-name">Business Dispatch</div>
+      <p class="svc-desc">Office-to-office delivery, supply runs, and internal logistics — we plug into your business as a dependable dispatch partner.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ HOW IT WORKS ════════════ -->
+<section id="how">
+  <div class="how-inner">
+    <div>
+      <div class="u-label reveal" style="margin-bottom:20px">Simple Process</div>
+      <h2 class="u-h2 reveal">Four steps.<br><em>That's all.</em></h2>
+      <p class="u-body reveal" style="margin-top:20px">We've made the delivery process as friction-free as possible. Request, dispatch, pickup, done.</p>
+
+      <div class="how-steps reveal">
+        <div class="how-step active">
+          <div class="step-num-col">
+            <div class="step-num">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div>
+            <div class="step-title">Request a Delivery</div>
+            <p class="step-desc">Fill out our quick form online or call us directly. Tell us your pickup address, drop-off location, and what needs to be moved.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="step-num-col">
+            <div class="step-num">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div>
+            <div class="step-title">We Assign a Courier</div>
+            <p class="step-desc">We confirm your request and dispatch the nearest available courier right away. No waiting, no back-and-forth.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="step-num-col">
+            <div class="step-num">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div>
+            <div class="step-title">Pickup & In Transit</div>
+            <p class="step-desc">Your courier collects the item and heads to the destination. You'll be notified when it's on its way.</p>
+          </div>
+        </div>
+        <div class="how-step">
+          <div class="step-num-col">
+            <div class="step-num">4</div>
+          </div>
+          <div>
+            <div class="step-title">Delivered & Confirmed</div>
+            <p class="step-desc">Your item arrives safely. You receive confirmation of successful delivery. Simple as that.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated panel -->
+    <div class="how-panel reveal">
+      <div class="how-panel-inner">
+        <div class="panel-grid"></div>
+        <svg class="panel-route-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="6" fill="var(--saffron)" opacity="0.8"/>
+          <circle cx="240" cy="80" r="6" fill="var(--sage-lt)" opacity="0.8"/>
+          <circle cx="80" cy="230" r="6" fill="var(--sage-lt)" opacity="0.8"/>
+          <circle cx="230" cy="220" r="6" fill="var(--saffron)" opacity="0.8"/>
+          <path d="M60 60 Q150 40 240 80" stroke="rgba(232,160,32,0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <path d="M240 80 Q260 150 230 220" stroke="rgba(106,168,152,0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <path d="M230 220 Q150 250 80 230" stroke="rgba(232,160,32,0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <path d="M80 230 Q40 150 60 60" stroke="rgba(106,168,152,0.25)" stroke-width="1.5" stroke-dasharray="6 4"/>
+          <path d="M60 60 L150 150" stroke="rgba(232,160,32,0.15)" stroke-width="1"/>
+          <path d="M240 80 L150 150" stroke="rgba(232,160,32,0.15)" stroke-width="1"/>
+          <path d="M80 230 L150 150" stroke="rgba(232,160,32,0.15)" stroke-width="1"/>
+          <path d="M230 220 L150 150" stroke="rgba(232,160,32,0.15)" stroke-width="1"/>
+          <text x="44" y="48" fill="rgba(242,237,228,0.4)" font-size="9" font-family="Outfit" letter-spacing="1">PICKUP</text>
+          <text x="218" y="70" fill="rgba(242,237,228,0.4)" font-size="9" font-family="Outfit" letter-spacing="1">DROP-OFF</text>
+          <text x="50" y="250" fill="rgba(242,237,228,0.4)" font-size="9" font-family="Outfit" letter-spacing="1">ORIGIN</text>
+          <text x="200" y="240" fill="rgba(242,237,228,0.4)" font-size="9" font-family="Outfit" letter-spacing="1">DEST.</text>
+        </svg>
+        <div class="panel-center-badge">
+          <span class="panel-badge-icon">⚡</span>
+          <div class="panel-badge-text">Express</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TRUST / WHY US ════════════ -->
+<section id="trust">
+  <div class="trust-layout">
+    <div>
+      <div class="u-label reveal" style="margin-bottom:20px">Why Addis Express</div>
+      <h2 class="u-h2 reveal">Built on trust.<br><em>Proven by delivery.</em></h2>
+      <p class="u-body reveal" style="margin-top:20px;margin-bottom:0">We're not a generic platform — we're a delivery team that takes every job seriously. Your items are treated with the care they deserve.</p>
+
+      <div class="trust-pillars reveal">
+        <div class="trust-card">
+          <span class="trust-card-icon">⚡</span>
+          <div class="trust-card-title">Fast Dispatch</div>
+          <p class="trust-card-desc">Same-day and urgent delivery with rapid courier assignment — no unnecessary delays.</p>
+        </div>
+        <div class="trust-card">
+          <span class="trust-card-icon">🔒</span>
+          <div class="trust-card-title">Reliable Handling</div>
+          <p class="trust-card-desc">Every item, from a small package to sensitive paperwork, is treated with care and professionalism.</p>
+        </div>
+        <div class="trust-card">
+          <span class="trust-card-icon">📍</span>
+          <div class="trust-card-title">Local Knowledge</div>
+          <p class="trust-card-desc">Our couriers know the city — routes, neighborhoods, shortcuts — and how to navigate it efficiently.</p>
+        </div>
+        <div class="trust-card">
+          <span class="trust-card-icon">🤝</span>
+          <div class="trust-card-title">Consistent Partner</div>
+          <p class="trust-card-desc">For individuals and businesses who need delivery they can count on — every single time.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abstract network visual -->
+    <div class="trust-visual reveal">
+      <div class="tv-grid"></div>
+
+      <div class="tv-node" style="position:absolute;top:20%;left:18%;">
+        <div class="tv-node-dot"></div>
+        <div class="tv-node-label">Pickup</div>
+      </div>
+      <div class="tv-node" style="position:absolute;top:18%;right:18%;">
+        <div class="tv-node-dot"></div>
+        <div class="tv-node-label">Drop-off</div>
+      </div>
+      <div class="tv-node" style="position:absolute;bottom:22%;left:22%;">
+        <div class="tv-node-dot"></div>
+        <div class="tv-node-label">Business</div>
+      </div>
+      <div class="tv-node" style="position:absolute;bottom:20%;right:20%;">
+        <div class="tv-node-dot"></div>
+        <div class="tv-node-label">Customer</div>
+      </div>
+
+      <div class="tv-center">
+        <div class="tv-center-ring">
+          <span class="tv-ae">AE</span>
+        </div>
+        <div class="tv-center-label">Addis Express Hub</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ FOR BUSINESS ════════════ -->
+<section id="business">
+  <div class="biz-header">
+    <div class="reveal">
+      <div class="u-label" style="margin-bottom:20px">For Businesses</div>
+      <h2 class="u-h2">Your city delivery<br><em>partner.</em></h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <p class="u-body">Whether you're a restaurant expanding your reach, a startup shipping products, or an office coordinating daily logistics — we handle the delivery so you can focus on your business.</p>
+    </div>
+  </div>
+
+  <!-- Who we serve tabs -->
+  <div class="audience-tabs reveal">
+    <div class="aud-tab active">
+      <span class="aud-tab-icon">🍽️</span>
+      <span class="aud-tab-label">Restaurants</span>
+    </div>
+    <div class="aud-tab">
+      <span class="aud-tab-icon">🛒</span>
+      <span class="aud-tab-label">Grocery & Retail</span>
+    </div>
+    <div class="aud-tab">
+      <span class="aud-tab-icon">🏢</span>
+      <span class="aud-tab-label">Offices</span>
+    </div>
+    <div class="aud-tab">
+      <span class="aud-tab-icon">📦</span>
+      <span class="aud-tab-label">Small Business</span>
+    </div>
+    <div class="aud-tab">
+      <span class="aud-tab-icon">👤</span>
+      <span class="aud-tab-label">Individuals</span>
+    </div>
+  </div>
+
+  <div class="biz-features reveal">
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Recurring Deliveries</div>
+      <p class="biz-feat-desc">Set up regular dispatch schedules that run like clockwork. Daily, weekly, or custom — we show up exactly when you need us.</p>
+    </div>
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Same-Day Dispatch</div>
+      <p class="biz-feat-desc">Need something moved urgently? We assign a courier fast so your deadlines and customer expectations are always met.</p>
+    </div>
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Trusted with Important Items</div>
+      <p class="biz-feat-desc">Products, payments, contracts, sensitive materials — handled with the professionalism your business and clients deserve.</p>
+    </div>
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Flexible, No Lock-In</div>
+      <p class="biz-feat-desc">Use us when you need us. No long-term contracts. Scale delivery volume up or down as your operations demand.</p>
+    </div>
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Direct Business Support</div>
+      <p class="biz-feat-desc">Business customers get real access to our team — not a chatbot. Real conversations, real accountability, real service.</p>
+    </div>
+    <div class="biz-feat">
+      <div class="biz-feat-bar"></div>
+      <div class="biz-feat-title">Grow With Us</div>
+      <p class="biz-feat-desc">As your business expands, so does our service. We're built to scale with you — across neighborhoods, districts, and beyond.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ ABOUT ════════════ -->
+<section id="about">
+  <div class="about-layout">
+    <div>
+      <div class="u-label reveal" style="margin-bottom:20px">Our Story</div>
+      <h2 class="u-h2 reveal">Delivery built for<br><em>the city's pulse.</em></h2>
+
+      <blockquote class="about-pull-quote reveal">
+        "We started with one belief — that fast, reliable delivery should be available to everyone. Not just big companies. Not just certain industries. Everyone."
+      </blockquote>
+
+      <p class="u-body reveal">Addis Express was founded to solve a simple problem: city delivery was inconsistent, slow, and hard to trust. We built a courier service that works the way modern people and businesses need — quickly, dependably, and with genuine care for every item we carry.</p>
+
+      <p class="u-body reveal" style="margin-top:16px">We're growing — and we're growing because we take every delivery seriously, whether it's a birthday gift, a business contract, or a restaurant order that needs to arrive hot.</p>
+
+      <div class="about-values reveal">
+        <div class="about-val">
+          <span class="about-val-name">Speed</span>
+          <span class="about-val-tag">Same-day dispatch</span>
+        </div>
+        <div class="about-val">
+          <span class="about-val-name">Reliability</span>
+          <span class="about-val-tag">Consistent service</span>
+        </div>
+        <div class="about-val">
+          <span class="about-val-name">Trust</span>
+          <span class="about-val-tag">Every item, every time</span>
+        </div>
+        <div class="about-val">
+          <span class="about-val-name">Growth</span>
+          <span class="about-val-tag">Built to scale</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-panel reveal">
+      <div class="about-panel-label">Our Mission</div>
+      <h3 class="about-panel-head">To be the most trusted delivery partner — starting here, growing everywhere.</h3>
+      <p class="about-panel-body">Every delivery matters. Whether it's your first shipment with us or your hundredth — we show up, we move fast, and we deliver with care. That's the Addis Express promise.</p>
+      <div class="about-stats">
+        <div class="a-stat">
+          <strong>Fast</strong>
+          <span>City-wide reach</span>
+        </div>
+        <div class="a-stat">
+          <strong>Reliable</strong>
+          <span>For every customer</span>
+        </div>
+        <div class="a-stat">
+          <strong>Trusted</strong>
+          <span>Important deliveries</span>
+        </div>
+        <div class="a-stat">
+          <strong>Growing</strong>
+          <span>Built to expand</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ CTA STRIP ════════════ -->
+<div class="cta-strip reveal" style="padding-bottom:0">
+  <div class="cta-inner">
+    <div>
+      <h2 class="cta-headline">Ready to send something?</h2>
+      <p class="cta-sub">Request a delivery in under two minutes. We'll handle the rest.</p>
+    </div>
+    <div class="cta-btns">
+      <a href="#contact" class="btn-cta-dark">Request a Pickup</a>
+      <a href="tel:+251000000000" class="btn-cta-ghost">📞 Call Us Now</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ CONTACT ════════════ -->
+<section id="contact">
+  <div class="u-label reveal" style="margin-bottom:20px">Get In Touch</div>
+  <h2 class="u-h2 reveal">Request a delivery<br><em>or reach out.</em></h2>
+  <p class="u-body reveal" style="margin-top:16px">Fill out the form and we'll confirm your request promptly. For urgent pickups, call us directly — we're available during operating hours.</p>
+
+  <div class="contact-layout">
+    <div class="contact-sidebar reveal">
+      <div class="contact-info-block">
+        <strong>Phone</strong>
+        <p>+251 000 000 000<br>For urgent same-day requests</p>
+      </div>
+      <div class="contact-info-block">
+        <strong>Email</strong>
+        <p>hello@addisexpress.et<br>We respond within a few hours</p>
+      </div>
+
+      <div class="contact-hrs">
+        <div class="hrs-title">Operating Hours</div>
+        <div class="hrs-row">
+          <span>Monday – Friday</span>
+          <strong>7:00 AM – 9:00 PM</strong>
+        </div>
+        <div class="hrs-row">
+          <span>Saturday</span>
+          <strong>8:00 AM – 8:00 PM</strong>
+        </div>
+        <div class="hrs-row">
+          <span>Sunday</span>
+          <strong>9:00 AM – 6:00 PM</strong>
+        </div>
+      </div>
+    </div>
+
+    <form class="contact-form reveal reveal-delay-1" onsubmit="return false;">
+      <div class="cf">
+        <label>Your Name</label>
+        <input type="text" placeholder="Full name">
+      </div>
+      <div class="cf">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+251 9__ ___ ___">
+      </div>
+      <div class="cf full">
+        <label>Pickup Location</label>
+        <input type="text" placeholder="Address, building, or area">
+      </div>
+      <div class="cf full">
+        <label>Drop-off Location</label>
+        <input type="text" placeholder="Recipient's address or area">
+      </div>
+      <div class="cf full">
+        <label>Delivery Type</label>
+        <select>
+          <option value="" disabled selected>Select a service type</option>
+          <option>Same-Day Delivery</option>
+          <option>Parcel / Package</option>
+          <option>Document Courier</option>
+          <option>Business / Office Dispatch</option>
+          <option>Restaurant or Retail Delivery</option>
+          <option>Scheduled Recurring Pickup</option>
+          <option>Urgent / Express</option>
+        </select>
+      </div>
+      <div class="cf full">
+        <label>Message or Instructions</label>
+        <textarea placeholder="Item description, timing preference, or special instructions..."></textarea>
+      </div>
+      <div class="cf-submit">
+        <button class="submit-btn" type="submit">Submit Request →</button>
+        <span class="submit-note">We typically respond within 30 minutes during business hours.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#hero" style="font-family:var(--ff-head);font-size:1.2rem;color:var(--cream);text-decoration:none;">Addis<span style="color:var(--saffron)">Express</span></a>
+      <p>Fast, reliable, and trusted delivery — for individuals, businesses, and everyone in between. Built to move with the city.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="#services">Same-Day Delivery</a></li>
+        <li><a href="#services">Parcel Delivery</a></li>
+        <li><a href="#services">Document Courier</a></li>
+        <li><a href="#services">Business Dispatch</a></li>
+        <li><a href="#services">Scheduled Pickups</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#business">For Businesses</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="tel:+251000000000">+251 000 000 000</a></li>
+        <li><a href="mailto:hello@addisexpress.et">hello@addisexpress.et</a></li>
+        <li><a href="#">Addis Ababa, Ethiopia</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Addis Express. All rights reserved.</span>
+    <ul class="footer-bottom-links">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Cookies</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// How-it-works step hover
+document.querySelectorAll('.how-step').forEach((step, i) => {
+  step.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.how-step').forEach(s => s.classList.remove('active'));
+    step.classList.add('active');
+  });
+});
+
+// Audience tabs
+document.querySelectorAll('.aud-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.aud-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
