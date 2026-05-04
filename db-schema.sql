@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS delivery_requests (
+  id UUID PRIMARY KEY,
+  customer_name TEXT NOT NULL,
+  customer_phone TEXT NOT NULL,
+  pickup_address TEXT NOT NULL,
+  dropoff_address TEXT NOT NULL,
+  package_type TEXT NOT NULL,
+  weight_kg NUMERIC(10,2) NOT NULL,
+  notes TEXT,
+  dimension_length_cm NUMERIC(10,2) NOT NULL,
+  dimension_width_cm NUMERIC(10,2) NOT NULL,
+  dimension_height_cm NUMERIC(10,2) NOT NULL,
+  distance_km NUMERIC(10,2) NOT NULL,
+  status TEXT NOT NULL DEFAULT 'RECEIVED',
+  total_before_vat NUMERIC(12,2) NOT NULL,
+  vat_amount NUMERIC(12,2) NOT NULL,
+  grand_total NUMERIC(12,2) NOT NULL,
+  payment_status TEXT NOT NULL DEFAULT 'pending',
+  scheduled_for TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
